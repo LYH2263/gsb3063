@@ -48,6 +48,16 @@ export const getWorks = async (req: Request, res: Response) => {
     return apiResponse(res, 200, 'Success', { total, page, limit, works });
 };
 
+// Public: Get ranking (top 10 published works ordered by viewCount)
+export const getRanking = async (_req: Request, res: Response) => {
+    const works = await prisma.work.findMany({
+        where: { status: 'PUBLISHED' },
+        orderBy: { viewCount: 'desc' },
+        take: 10
+    });
+    return apiResponse(res, 200, 'Success', works);
+};
+
 // Public: Get work details
 export const getWorkDetail = async (req: Request, res: Response) => {
     const id = parseInt(req.params.id);
