@@ -19,6 +19,16 @@ const normalizeWorkPayload = (body: any) => {
     return { title, description, mediaUrl, category, tags, status };
 };
 
+// Public: Get top 10 ranking works by view count
+export const getRanking = async (req: Request, res: Response) => {
+    const works = await prisma.work.findMany({
+        where: { status: 'PUBLISHED' },
+        orderBy: { viewCount: 'desc' },
+        take: 10
+    });
+    return apiResponse(res, 200, 'Success', works);
+};
+
 // Public: Get published works
 export const getWorks = async (req: Request, res: Response) => {
     const page = parseInt(req.query.page as string) || 1;

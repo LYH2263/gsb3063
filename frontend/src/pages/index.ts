@@ -8,6 +8,7 @@ export { AdminOperationLogs } from './admin/OperationLogs';
 
 export { Home } from './public/Home';
 export { Works } from './public/Works';
+export { Ranking } from './public/Ranking';
 export { Login } from './public/Login';
 export { Register } from './public/Register';
 export { Profile } from './public/Profile';
