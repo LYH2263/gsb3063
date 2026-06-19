@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.env
+.DS_Store
+
+# 本地笔记，不纳入版本控制
+题目.md
+对话/
