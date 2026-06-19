@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getWorks, getWorkDetail, toggleInteraction, getMyFavorites, adminGetWorks, adminCreateWork, adminUpdateWork, adminDeleteWork } from '../controllers/work';
+import { getWorks, getWorkDetail, getRanking, toggleInteraction, getMyFavorites, adminGetWorks, adminCreateWork, adminUpdateWork, adminDeleteWork } from '../controllers/work';
 import { authenticate, requireAdmin } from '../middleware/auth';
 import { logOperation } from '../middleware/logger';
 import { asyncHandler } from '../middleware/error';
@@ -7,6 +7,7 @@ import { asyncHandler } from '../middleware/error';
 const router = Router();
 
 // Public
+router.get('/ranking', asyncHandler(getRanking));
 router.get('/', asyncHandler(getWorks));
 router.get('/:id', asyncHandler(getWorkDetail));
 

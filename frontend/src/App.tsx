@@ -8,7 +8,7 @@ import PublicLayout from './layouts/PublicLayout';
 
 import {
   AdminDashboard, AdminWorks, AdminUsers, AdminStyles, AdminMessages, AdminSettings, AdminOperationLogs,
-  Home, Works, Login, Register, Profile, WorkDetail
+  Home, Works, Ranking, Login, Register, Profile, WorkDetail
 } from './pages';
 
 const App = () => {
@@ -23,6 +23,7 @@ const App = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/works" element={<Works />} />
                 <Route path="/works/:id" element={<WorkDetail />} />
+                <Route path="/ranking" element={<Ranking />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/profile" element={<Profile />} />
