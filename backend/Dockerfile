@@ -1,20 +1,24 @@
+# syntax=docker/dockerfile:1
 FROM node:20-slim
-RUN apt-get update && apt-get install -y openssl
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends openssl \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm config set registry https://registry.npmmirror.com
-RUN rm -f package-lock.json && npm install
+COPY package.json package-lock.json ./
+RUN --mount=type=cache,target=/root/.npm \
+    npm config set registry https://registry.npmmirror.com \
+    && npm ci
+
+COPY prisma ./prisma
+RUN npx prisma generate
 
 COPY . .
 
-# Generate Prisma client
-RUN npx prisma generate
-
-# Compile TypeScript
-RUN npx tsc || true
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 EXPOSE 8063
-
-# Need to run db push, seed, and then start the server
-CMD ["sh", "-c", "npx prisma db push --accept-data-loss && npm run prisma:seed && node dist/index.js"]
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

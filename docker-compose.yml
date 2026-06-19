@@ -1,9 +1,7 @@
-version: '3.8'
-
 services:
   db:
     image: mysql:8.0
-    restart: always
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: indiesite
@@ -12,21 +10,25 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
-      timeout: 10s
-      retries: 5
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 3s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    restart: always
+    restart: unless-stopped
     ports:
       - "8063:8063"
     environment:
-      - DATABASE_URL=mysql://root:root@db:3306/indiesite
-      - JWT_SECRET=supersecretjwtkey_12345
-      - PORT=8063
+      DATABASE_URL: mysql://root:root@db:3306/indiesite
+      JWT_SECRET: supersecretjwtkey_12345
+      PORT: "8063"
+    volumes:
+      - backend_data:/app/.data
     depends_on:
       db:
         condition: service_healthy
@@ -35,7 +37,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    restart: always
+    restart: unless-stopped
     ports:
       - "3063:80"
     depends_on:
@@ -43,3 +45,4 @@ services:
 
 volumes:
   mysql_data:
+  backend_data:
